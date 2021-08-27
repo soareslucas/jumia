@@ -1,7 +1,9 @@
 Exercício Jumia
 
+Follow the commands bellow to run the project:
 
+1) mvn install -Dmaven.test.skip
 
-mvn install  
+2) docker-compose build
 
-mvn spring-boot:run
+3) docker-compose up

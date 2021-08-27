@@ -3,6 +3,8 @@ package pt.jumia.exercise.controller;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,9 +50,9 @@ public class HomeController {
     public String upload(HttpServletRequest request, @RequestParam MultipartFile file)  {
         
     	try {
-            byte [] uploadedFiles = file.getBytes();
+            Reader reader = new InputStreamReader(file.getInputStream());
 
-            Reader reader = new StringReader(new String(uploadedFiles));
+            //Reader reader = new StringReader(new String(uploadedFiles));
 
             CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT
                     .withHeader("id", "email", "phone_number", "parcel_weight")
