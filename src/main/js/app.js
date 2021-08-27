@@ -5,7 +5,6 @@ const Container = require("react-bootstrap/Container")
 const Row = require("react-bootstrap/Row")
 const Col = require("react-bootstrap/Col")
 const Form = require("react-bootstrap/Form")
-const Button = require("react-bootstrap/Button")
 const Alert = require("react-bootstrap/Alert")
 
 
@@ -146,7 +145,7 @@ class Index extends React.Component {
                                             </Form.Group>
 
                                             <Form.Group as={Col}  md="6" >
-                                                    <Button className="btn btn-primary text-right"  to="/usersList" > Visualizar dados importados </Button>
+                                                    <Link className="btn btn-primary text-right"  to="/users" > Visualizar dados importados </Link>
                                             </Form.Group>
 
 

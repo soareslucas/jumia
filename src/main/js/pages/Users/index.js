@@ -103,11 +103,17 @@ class App extends React.Component {
 
 		var newNumber = this.state.numberPage - 1;
 
+		if(newNumber < 0 ){
+			newNumber = 0		
+		}
+
 		this.setState({ numberPage: newNumber});
 		
 		this.findByCountry( 
 			ReactDOM.findDOMNode(this.refs['country']).value.trim(),
 			newNumber);
+
+
 	}
 	
 	handleNavNext(e) {
@@ -131,11 +137,27 @@ class App extends React.Component {
 		this.setState({ mostra: true});
 
 		this.setState({ users: []});
+		var url = "";
+		var spring = false;
 
-		axios.get('findUsersByCountry?country='+country+'&numberPage='+numberPage
+		if(country == "Choose which country to filter..." || country == null){
+
+			 spring = true;
+			 url = "api/users?page="+numberPage+"&size="+this.state.pageSize;
+		}else{
+			url = 'findUsersByCountry?country='+country+'&numberPage='+numberPage;
+		}
+
+		axios.get(url
 		).then((response) => {
 			console.log(response);
-			this.setState({ users: response.data });
+
+			if(spring){
+				this.setState({ users: response.data._embedded.users });
+			}else{
+				this.setState({ users: response.data });
+			}
+			
 
             this.setState({ mostra: false });
 
@@ -149,29 +171,6 @@ class App extends React.Component {
 		});
 	}
 
-	loadFromServer(pageSize){
-
-		console.log('teste');
-
-		follow(client, '/api', [
-			{rel: 'users', params: {size: pageSize}}]
-		).then(userCollection => {
-			return client({
-				method: 'GET',
-				path: userCollection.entity._links.profile.href,
-				headers: {'Accept': 'application/schema+json'}
-			}).then(schema => {
-				this.schema = schema.entity;
-				return userCollection;
-			});
-		}).done(userCollection => {
-			this.setState({
-				users: userCollection.entity._embedded.users,
-				attributes: Object.keys(this.schema.properties),
-				pageSize: pageSize,
-				links: userCollection.entity._links});
-		});
-	}
 
 
 	handleSubmit(e) {
@@ -188,8 +187,6 @@ class App extends React.Component {
 			country = ReactDOM.findDOMNode(this.refs['country']).value.trim();
 			
 			this.setState({ numberPage: 0});
-
-
 			this.findByCountry(country, 0);
 
 			this.setState({ validated: false });
@@ -199,7 +196,7 @@ class App extends React.Component {
 	}
 
 	componentDidMount() {
-		this.loadFromServer(this.state.pageSize);
+		this.findByCountry(null, 0)
 	}
 
 	onNavigate(navUri) {
@@ -274,7 +271,7 @@ class App extends React.Component {
 								<Form.Group as={Col} md="1" controlId="2">
 									<div key="botao">
 											<Button variant="primary" type="submit">
-												Buscar
+												Search
 											</Button>
 									</div>
 								</Form.Group>						
